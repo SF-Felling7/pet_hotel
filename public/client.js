@@ -22,7 +22,7 @@ function getOwners(){
       console.log('back from server with:', response);
       $('#ownerName').empty();
       for (var i = 0; i < response.length; i++) {
-        $('#ownerName').append('<option id=' + "response[i].ownerfirstname" + "response[i].ownerlastname" + ' data-ownerid='+response[i].id +'>'+ response[i].ownerfirstname + ' ' + response[i].ownerlastname + '</option>');
+        $('#ownerName').append('<option id=' + "response[i].first_name" + "response[i].last_name" + ' data-ownerid='+response[i].id +'>'+ response[i].first_name + ' ' + response[i].last_name + '</option>');
       }  //end for loop
     }  // end success
   });  //end ajax
@@ -56,7 +56,7 @@ function addPet(){
   var petname = $('#petName').val();
 
   var petToRegister = {
-    id: id,
+    ownerid: id,
     color: color,
     breed: breed,
     petName: petname
@@ -83,7 +83,7 @@ function addTable(response) {
       $('.newrow').remove();
       for (var i = 0; i < response.length; i++) {
         $('table').append('<tr class="newrow"></tr>');
-        $('.newrow').last().append('<td>'+response[i].ownerfirstname + " " + response[i].ownerlastname+'</td><td>'+response[i].petname+'</td><td>'+response[i].breed+'</td><td>'+response[i].color+
+        $('.newrow').last().append('<td>'+response[i].first_name + " " + response[i].last_name+'</td><td>'+response[i].name+'</td><td>'+response[i].breed+'</td><td>'+response[i].color+
         '</td><td><button class="update">Go</button></td><td><button class="delete">Go</button></td><td><select class="checkinout"><option>In</option><option>Out</option></td>');
       }  //end for loop
     }  // end success

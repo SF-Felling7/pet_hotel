@@ -44,7 +44,7 @@ app.get ('/getOwners', function (req, res){
     else{
       console.log('connected to db');
       // send query for all owners in the 'pets' table and hold in a variable (resultSet)
-      var resultSet = connection.query( "SELECT * from pets" );
+      var resultSet = connection.query( "SELECT * from owners" );
       // convert each row into an object in the allOwners array
       // on each row, push the row into allOwners
       resultSet.on( 'row', function( row ){
@@ -80,7 +80,7 @@ app.post('/register', function(req, res){
     else{
       console.log('connected to db');
       //query write this owner to db (req.body)
-      connection.query( "INSERT INTO pets (ownerfirstname, ownerlastname) VALUES($1, $2)", [req.body.first, req.body.last]);
+      connection.query( "INSERT INTO owners (first_name, last_name) VALUES($1, $2)", [req.body.first, req.body.last]);
       // close connection to reopen spot in pool
       done();
       // res.send
@@ -107,11 +107,11 @@ app.post('/newPet', function(req, res){
     else{
       console.log('connected to db');
       //query write this owner to db (req.body)
-      connection.query( "UPDATE  pets SET petname ='"+ req.body.petName +" 'WHERE id =" + req.body.id);
-      connection.query( "UPDATE  pets SET breed ='"+ req.body.breed +" 'WHERE id =" + req.body.id);
-      connection.query( "UPDATE  pets SET color ='"+ req.body.color +" 'WHERE id =" + req.body.id);
-
-
+      var newid = connection.query("INSERT INTO pets (name, breed, color) VALUES ($1, $2, $3) RETURNING id", [req.body.petName, req.body.breed, req.body.color]);
+      // connection.query("SELECT" + newid + "FROM pets");
+      console.log(newid);
+      console.log(req.body.ownerid);
+      connection.query( "INSERT INTO pet_owner (owner_id,pet_id) VALUES($1,$2)", [req.body.ownerid,newid]);
       // close connection to reopen spot in pool
       done();
       // res.send
@@ -136,7 +136,7 @@ app.get ('/getTable', function (req, res){
     else{
       console.log('connected to db');
       // send query for all owners in the 'pets' table and hold in a variable (resultSet)
-      var resultSet = connection.query( "SELECT * from pets" );
+      var resultSet = connection.query( "SELECT * from pets JOIN pet_owner ON pets.id = pet_owner.pet_id JOIN owners ON pet_owner.owner_id = owners.id" );
       // convert each row into an object in the allTable array
       // on each row, push the row into allTable
       resultSet.on( 'row', function( row ){
